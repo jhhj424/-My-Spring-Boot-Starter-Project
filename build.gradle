@@ -1,0 +1,86 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+    id 'war'
+    id 'idea'
+}
+
+group = 'com.tria'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springframework.boot:spring-boot-devtools')
+
+    compileOnly 'org.projectlombok:lombok'
+
+
+    // 유틸리티
+    compile("javax.servlet:jstl:1.2")
+    compile("org.apache.commons:commons-lang3:3.9")
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile("com.google.guava:guava:17.0")
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+
+    // Java excel api.
+    compile group: 'org.apache.poi', name: 'poi', version: '3.10-FINAL'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.10-FINAL'
+    compile group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.10-FINAL'
+    compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.10-FINAL'
+    compile group: 'org.apache.poi', name: 'poi-excelant', version: '3.10-FINAL'
+
+    //runtimeOnly 'com.oracle.ojdbc:ojdbc8'
+
+    //runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+    //runtimeOnly 'mysql:mysql-connector-java'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    //model and view link
+    providedRuntime("org.apache.tomcat.embed:tomcat-embed-jasper")
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+ext.profile = !project.hasProperty('profile')  ? 'dev' : project.getProperty('profile')
+
+
+println "##### BUILD OPTION ########\n"
+println ext.profile
+println "\n###########################\n"
+
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources", "src/main/properties/${profile}"
+        }
+    }
+}
